@@ -1,0 +1,95 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+#include <cstdlib> 
+
+using namespace std;
+
+
+class Transaction {
+public:
+    string description;
+    double amount;
+    bool isIncome; 
+
+    Transaction(const string& desc, double amt, bool income)
+        : description(desc), amount(amt), isIncome(income) {}
+};
+
+class FinanceTracker {
+private:
+    vector<Transaction> transactions;
+
+public:
+    void addTransaction(const string& description, double amount, bool isIncome) {
+        transactions.emplace_back(description, amount, isIncome);
+    }
+
+    void generateReport() const {
+        double totalIncome = 0.0;
+        double totalExpense = 0.0;
+
+        cout << fixed << setprecision(2);
+        cout << "Отчет о финансах:\n";
+        cout << "-----------------------------------\n";
+        for (const auto& transaction : transactions) {
+            if (transaction.isIncome) {
+                totalIncome += transaction.amount;
+                cout << "Доход: " << transaction.description << " - " << transaction.amount << "\n";
+            }
+            else {
+                totalExpense += transaction.amount;
+                cout << "Расход: " << transaction.description << " - " << transaction.amount << "\n";
+            }
+        }
+        cout << "-----------------------------------\n";
+        cout << "Общий доход: " << totalIncome << "\n";
+        cout << "Общий расход: " << totalExpense << "\n";
+        cout << "Чистый доход: " << (totalIncome - totalExpense) << "\n";
+    }
+};
+
+int main() {
+    system("chcp 1251");
+
+    FinanceTracker tracker;
+    int choice;
+
+    do {
+        cout << "\nСистема учета расходов и доходов\n";
+        cout << "1. Добавить доход\n";
+        cout << "2. Добавить расход\n";
+        cout << "3. Сгенерировать отчет\n";
+        cout << "0. Выход\n";
+        cout << "Выберите действие: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            string description;
+            double amount;
+            cout << "Введите описание дохода: ";
+            cin.ignore(); 
+            getline(cin, description);
+            cout << "Введите сумму дохода: ";
+            cin >> amount;
+            tracker.addTransaction(description, amount, true);
+        }
+        else if (choice == 2) {
+            string description;
+            double amount;
+            cout << "Введите описание расхода: ";
+            cin.ignore(); 
+            getline(std::cin, description);
+            cout << "Введите сумму расхода: ";
+            cin >> amount;
+            tracker.addTransaction(description, amount, false);
+        }
+        else if (choice == 3) {
+            tracker.generateReport();
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
